@@ -9,7 +9,7 @@ echo "Generating static config using Node.js for reliable environment variable e
 node -e "
 const fs = require('fs');
 const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN || 'my-secret-4863';
-const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || 'AIzaSyC8-ySLrut_IvuE-1xohiVdeNp9CokmMjY';
 
 const config = {
   messages: {
