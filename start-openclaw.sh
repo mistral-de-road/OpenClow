@@ -21,7 +21,7 @@ const config = {
       subagents: { maxConcurrent: 8 },
       compaction: { mode: 'safeguard' },
       workspace: '/root/.openclaw/workspace',
-      model: { primary: 'google/gemini-1.5-flash' }
+      model: { primary: 'google/gemini-2.0-flash' }
     }
   },
   gateway: {
@@ -44,7 +44,7 @@ const config = {
         api: 'google-generative-ai',
         models: [
           {
-            id: 'gemini-1.5-flash',
+            id: 'gemini-2.0-flash',
             name: 'Gemini 1.5 Flash',
             contextWindow: 1048576,
             maxTokens: 8192,
