@@ -246,31 +246,34 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 // Google Gemini direct configuration
 // Sets google provider and default model if key is present.
 // Wipes conflicting sections to ensure validation passes.
-const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
-if (geminiKey) {
-    const providerName = 'google';
+// Google Gemini direct configuration
+// Sets google provider and default model if key is present.
+// Ensures baseUrl and cost are present to satisfy OpenClaw's schema.
+const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+console.log('Gemini patch check: key exists =', !!googleKey);
+
+if (googleKey) {
+    const providerName = googleKey.startsWith('AIza') ? 'google' : 'google'; // Always use google for native SDK
     const modelId = 'gemini-1.5-flash';
 
-    console.log('Applying clean Gemini configuration patch...');
+    console.log('Applying Gemini configuration patch for provider:', providerName);
     
-    // Completely reset models to avoid provider/profile mismatch
-    config.models = {
-        mode: 'merge',
-        providers: {
-            [providerName]: {
-                baseUrl: 'https://generativelanguage.googleapis.com',
-                apiKey: geminiKey,
-                api: 'google-generative-ai',
-                models: [{
-                    id: modelId,
-                    name: 'Gemini 1.5 Flash',
-                    contextWindow: 1048576,
-                    maxTokens: 8192,
-                    input: ["text", "image"],
-                    cost: { input: 0.075, output: 0.3, cacheRead: 0.01, cacheWrite: 0.01 }
-                }],
-            }
-        }
+    config.models = config.models || {};
+    config.models.mode = 'merge';
+    config.models.providers = config.models.providers || {};
+    
+    config.models.providers[providerName] = {
+        baseUrl: 'https://generativelanguage.googleapis.com',
+        apiKey: googleKey,
+        api: 'google-generative-ai',
+        models: [{
+            id: modelId,
+            name: 'Gemini 1.5 Flash',
+            contextWindow: 1048576,
+            maxTokens: 8192,
+            input: ["text", "image"],
+            cost: { input: 0.075, output: 0.3, cacheRead: 0.01, cacheWrite: 0.01 }
+        }],
     };
 
     // Wipe auth profiles to prevent "missing provider" errors
@@ -279,11 +282,9 @@ if (geminiKey) {
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: providerName + '/' + modelId };
-    
-    // Reset agent-specific model mappings
     config.agents.defaults.models = {};
     
-    console.log('Gemini configuration rebuilt and auth profiles cleared');
+    console.log('Gemini configuration patch applied successfully');
 }
 
 // Telegram configuration

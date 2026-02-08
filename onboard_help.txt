@@ -1,0 +1,58 @@
+
+🦞 OpenClaw 2026.2.3 (e75e2b1) — The only bot that stays out of your training set.
+
+Usage: openclaw onboard [options]
+
+Interactive wizard to set up the gateway, workspace, and skills
+
+Options:
+  --workspace <dir>                        Agent workspace directory (default: ~/.openclaw/workspace)
+  --reset                                  Reset config + credentials + sessions + workspace before running wizard
+  --non-interactive                        Run without prompts (default: false)
+  --accept-risk                            Acknowledge that agents are powerful and full system access is risky (required for --non-interactive) (default: false)
+  --flow <flow>                            Wizard flow: quickstart|advanced|manual
+  --mode <mode>                            Wizard mode: local|remote
+  --auth-choice <choice>                   Auth: setup-token|token|chutes|openai-codex|openai-api-key|openrouter-api-key|ai-gateway-api-key|cloudflare-ai-gateway-api-key|moonshot-api-key|moonshot-api-key-cn|kimi-code-api-key|synthetic-api-key|venice-api-key|gemini-api-key|zai-api-key|xiaomi-api-key|apiKey|minimax-api|minimax-api-lightning|opencode-zen|skip
+  --token-provider <id>                    Token provider id (non-interactive; used with --auth-choice token)
+  --token <token>                          Token value (non-interactive; used with --auth-choice token)
+  --token-profile-id <id>                  Auth profile id (non-interactive; default: <provider>:manual)
+  --token-expires-in <duration>            Optional token expiry duration (e.g. 365d, 12h)
+  --anthropic-api-key <key>                Anthropic API key
+  --openai-api-key <key>                   OpenAI API key
+  --openrouter-api-key <key>               OpenRouter API key
+  --ai-gateway-api-key <key>               Vercel AI Gateway API key
+  --cloudflare-ai-gateway-account-id <id>  Cloudflare Account ID
+  --cloudflare-ai-gateway-gateway-id <id>  Cloudflare AI Gateway ID
+  --cloudflare-ai-gateway-api-key <key>    Cloudflare AI Gateway API key
+  --moonshot-api-key <key>                 Moonshot API key
+  --kimi-code-api-key <key>                Kimi Coding API key
+  --gemini-api-key <key>                   Gemini API key
+  --zai-api-key <key>                      Z.AI API key
+  --xiaomi-api-key <key>                   Xiaomi API key
+  --minimax-api-key <key>                  MiniMax API key
+  --synthetic-api-key <key>                Synthetic API key
+  --venice-api-key <key>                   Venice API key
+  --opencode-zen-api-key <key>             OpenCode Zen API key
+  --gateway-port <port>                    Gateway port
+  --gateway-bind <mode>                    Gateway bind: loopback|tailnet|lan|auto|custom
+  --gateway-auth <mode>                    Gateway auth: token|password
+  --gateway-token <token>                  Gateway token (token auth)
+  --gateway-password <password>            Gateway password (password auth)
+  --remote-url <url>                       Remote Gateway WebSocket URL
+  --remote-token <token>                   Remote Gateway token (optional)
+  --tailscale <mode>                       Tailscale: off|serve|funnel
+  --tailscale-reset-on-exit                Reset tailscale serve/funnel on exit
+  --install-daemon                         Install gateway service
+  --no-install-daemon                      Skip gateway service install
+  --skip-daemon                            Skip gateway service install
+  --daemon-runtime <runtime>               Daemon runtime: node|bun
+  --skip-channels                          Skip channel setup
+  --skip-skills                            Skip skills setup
+  --skip-health                            Skip health check
+  --skip-ui                                Skip Control UI/TUI prompts
+  --node-manager <name>                    Node manager for skills: npm|pnpm|bun
+  --json                                   Output JSON summary (default: false)
+  -h, --help                               display help for command
+
+Docs: https://docs.openclaw.ai/cli/onboard
+
