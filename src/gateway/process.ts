@@ -94,7 +94,9 @@ export async function ensureMoltbotGateway(sandbox: Sandbox, env: MoltbotEnv): P
   const command = '/usr/local/bin/start-openclaw.sh';
 
   console.log('Starting process with command:', command);
-  console.log('Environment vars being passed:', Object.keys(envVars));
+  console.log('Environment vars being passed (keys):', Object.keys(envVars));
+  console.log('Gemini key present in envVars:', !!envVars.GOOGLE_GENERATIVE_AI_API_KEY || !!envVars.GEMINI_API_KEY);
+  console.log('Gateway token present in envVars:', !!envVars.OPENCLAW_GATEWAY_TOKEN);
 
   let process: Process;
   try {
