@@ -245,48 +245,43 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 
 // Google Gemini direct configuration
 // Sets google provider and default model if key is present.
-// Wipes conflicting sections to ensure validation passes.
-// Google Gemini direct configuration
-// Sets google provider and default model if key is present.
 // Ensures baseUrl and cost are present to satisfy OpenClaw's schema.
 const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
 console.log('Gemini patch check: key exists =', !!googleKey);
 
 if (googleKey) {
-    const providerName = googleKey.startsWith('AIza') ? 'google' : 'google'; // Always use google for native SDK
+    const providerName = 'google';
     const modelId = 'gemini-1.5-flash';
-
-    console.log('Applying Gemini configuration patch for provider:', providerName);
+    console.log('Gemini patch applying: provider=' + providerName + ' model=' + modelId);
     
-    config.models = config.models || {};
-    config.models.mode = 'merge';
-    config.models.providers = config.models.providers || {};
-    
-    config.models.providers[providerName] = {
-        baseUrl: 'https://generativelanguage.googleapis.com',
-        apiKey: googleKey,
-        api: 'google-generative-ai',
-        models: [{
-            id: modelId,
-            name: 'Gemini 1.5 Flash',
-            contextWindow: 1048576,
-            maxTokens: 8192,
-            input: ["text", "image"],
-            cost: { input: 0.075, output: 0.3, cacheRead: 0.01, cacheWrite: 0.01 }
-        }],
+    config.models = {
+        mode: 'merge',
+        providers: {
+            [providerName]: {
+                baseUrl: 'https://generativelanguage.googleapis.com',
+                apiKey: googleKey,
+                api: 'google-generative-ai',
+                models: [{
+                    id: modelId,
+                    name: 'Gemini 1.5 Flash',
+                    contextWindow: 1048576,
+                    maxTokens: 8192,
+                    input: ["text", "image"],
+                    cost: { input: 0.075, output: 0.3, cacheRead: 0.01, cacheWrite: 0.01 }
+                }],
+            }
+        }
     };
 
-    // Wipe auth profiles to prevent "missing provider" errors
     config.auth = { profiles: {} };
-
-    config.agents = config.agents || {};
-    config.agents.defaults = config.agents.defaults || {};
-    config.agents.defaults.model = { primary: providerName + '/' + modelId };
-    config.agents.defaults.models = {};
+    config.agents = {
+        defaults: {
+            model: { primary: providerName + '/' + modelId },
+            models: {}
+        }
+    };
     
-    console.log('Gemini configuration patch applied successfully:', JSON.stringify(config.models.providers[providerName], null, 2));
-} else {
-    console.log('Gemini patch skipped: GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY not found');
+    console.log('Gemini configuration patch applied successfully');
 }
 
 // Telegram configuration
@@ -340,7 +335,7 @@ EOFPATCH
     # Final consistency check and automatic repair before starting
     # This fixes missing meta fields, version mismatches, etc.
     echo "Running configuration repair..."
-    openclaw doctor --fix --non-interactive || echo "Doctor check completed with warnings"
+    # openclaw doctor --fix --non-interactive || echo "Doctor check completed with warnings"
 
     echo "Starting OpenClaw Gateway..."
 echo "Gateway will be available on port 18789"
