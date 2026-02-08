@@ -258,6 +258,7 @@ if (geminiKey) {
         mode: 'merge',
         providers: {
             [providerName]: {
+                baseUrl: 'https://generativelanguage.googleapis.com',
                 apiKey: geminiKey,
                 api: 'google-generative-ai',
                 models: [{
