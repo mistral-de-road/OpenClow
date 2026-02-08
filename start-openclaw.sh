@@ -245,37 +245,40 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 
 // Google Gemini direct configuration
 // Sets google provider and default model if key is present.
-// Prioritizes direct Google SDK over AI Gateway wrappers for stability.
+// Clears legacy/redundant providers to avoid validation errors.
 const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
 if (geminiKey) {
     const providerName = 'google';
     const modelId = 'gemini-1.5-flash';
 
-    console.log('Force patching for Gemini direct provider...');
+    console.log('Final Gemini configuration patch...');
     
-    // Remove conflicting legacy AI gateway providers that might have used the same key
-    if (config.models && config.models.providers) {
-        delete config.models.providers['cf-ai-gw-google'];
-        delete config.models.providers['cloudflare-ai-gateway'];
-    }
-
-    config.models = config.models || {};
-    config.models.providers = config.models.providers || {};
-    config.models.providers[providerName] = {
-        apiKey: geminiKey,
-        api: 'google-generative-ai',
-        models: [{
-            id: modelId,
-            name: 'Gemini 1.5 Flash',
-            contextWindow: 1048576,
-            maxTokens: 8192,
-            input: ["text", "image"]
-        }],
+    // Wipe and rebuild models section to ensure consistency
+    config.models = {
+        mode: 'merge',
+        providers: {
+            [providerName]: {
+                apiKey: geminiKey,
+                api: 'google-generative-ai',
+                models: [{
+                    id: modelId,
+                    name: 'Gemini 1.5 Flash',
+                    contextWindow: 1048576,
+                    maxTokens: 8192,
+                    input: ["text", "image"]
+                }],
+            }
+        }
     };
+
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: providerName + '/' + modelId };
-    console.log('Gemini direct configuration applied and legacy providers cleared');
+    
+    // Clear legacy model mappings that might cause "model not found" errors
+    config.agents.defaults.models = {};
+    
+    console.log('Gemini configuration rebuilt and legacy models cleared');
 }
 
 // Telegram configuration
@@ -326,7 +329,12 @@ EOFPATCH
 # ============================================================
 # START GATEWAY
 # ============================================================
-echo "Starting OpenClaw Gateway..."
+    # Final consistency check and automatic repair before starting
+    # This fixes missing meta fields, version mismatches, etc.
+    echo "Running configuration repair..."
+    openclaw doctor --fix --non-interactive || echo "Doctor check completed with warnings"
+
+    echo "Starting OpenClaw Gateway..."
 echo "Gateway will be available on port 18789"
 
 rm -f /tmp/openclaw-gateway.lock 2>/dev/null || true
