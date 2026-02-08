@@ -1,6 +1,8 @@
 #!/bin/bash
 # High-reliability startup script for OpenClaw (Gemini focus)
 set -ex
+export DEBUG=*
+
 
 CONFIG_DIR="/root/.openclaw"
 mkdir -p "$CONFIG_DIR"
