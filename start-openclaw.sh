@@ -244,11 +244,20 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 }
 
 // Google Gemini direct configuration
-// Sets google provider and default model if key is present
+// Sets google provider and default model if key is present.
+// Prioritizes direct Google SDK over AI Gateway wrappers for stability.
 const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
 if (geminiKey) {
     const providerName = 'google';
     const modelId = 'gemini-1.5-flash';
+
+    console.log('Force patching for Gemini direct provider...');
+    
+    // Remove conflicting legacy AI gateway providers that might have used the same key
+    if (config.models && config.models.providers) {
+        delete config.models.providers['cf-ai-gw-google'];
+        delete config.models.providers['cloudflare-ai-gateway'];
+    }
 
     config.models = config.models || {};
     config.models.providers = config.models.providers || {};
@@ -259,13 +268,14 @@ if (geminiKey) {
             id: modelId,
             name: 'Gemini 1.5 Flash',
             contextWindow: 1048576,
-            maxTokens: 8192
+            maxTokens: 8192,
+            input: ["text", "image"]
         }],
     };
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: providerName + '/' + modelId };
-    console.log('Gemini configuration patched directly');
+    console.log('Gemini direct configuration applied and legacy providers cleared');
 }
 
 // Telegram configuration
