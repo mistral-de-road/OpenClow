@@ -241,6 +241,31 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
     }
 }
 
+// Google Gemini direct configuration
+// Sets google provider and default model if key is present
+const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+if (geminiKey) {
+    const providerName = 'google';
+    const modelId = 'gemini-1.5-flash';
+
+    config.models = config.models || {};
+    config.models.providers = config.models.providers || {};
+    config.models.providers[providerName] = {
+        apiKey: geminiKey,
+        api: 'google-generative-ai',
+        models: [{
+            id: modelId,
+            name: 'Gemini 1.5 Flash',
+            contextWindow: 1048576,
+            maxTokens: 8192
+        }],
+    };
+    config.agents = config.agents || {};
+    config.agents.defaults = config.agents.defaults || {};
+    config.agents.defaults.model = { primary: providerName + '/' + modelId };
+    console.log('Gemini configuration patched directly');
+}
+
 // Telegram configuration
 // Overwrite entire channel object to drop stale keys from old R2 backups
 // that would fail OpenClaw's strict config validation (see #47)

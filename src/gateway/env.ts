@@ -26,6 +26,9 @@ export function buildEnvVars(env: MoltbotEnv): Record<string, string> {
   if (env.GOOGLE_GENERATIVE_AI_API_KEY) {
     envVars.GOOGLE_GENERATIVE_AI_API_KEY = env.GOOGLE_GENERATIVE_AI_API_KEY;
   }
+  if (env.GEMINI_API_KEY) {
+    envVars.GEMINI_API_KEY = env.GEMINI_API_KEY;
+  }
 
   // Legacy AI Gateway support: AI_GATEWAY_BASE_URL + AI_GATEWAY_API_KEY
   // When set, these override direct keys for backward compatibility
