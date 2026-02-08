@@ -245,15 +245,15 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 
 // Google Gemini direct configuration
 // Sets google provider and default model if key is present.
-// Clears legacy/redundant providers to avoid validation errors.
+// Wipes conflicting sections to ensure validation passes.
 const geminiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
 if (geminiKey) {
     const providerName = 'google';
     const modelId = 'gemini-1.5-flash';
 
-    console.log('Final Gemini configuration patch...');
+    console.log('Applying clean Gemini configuration patch...');
     
-    // Wipe and rebuild models section to ensure consistency
+    // Completely reset models to avoid provider/profile mismatch
     config.models = {
         mode: 'merge',
         providers: {
@@ -265,20 +265,24 @@ if (geminiKey) {
                     name: 'Gemini 1.5 Flash',
                     contextWindow: 1048576,
                     maxTokens: 8192,
-                    input: ["text", "image"]
+                    input: ["text", "image"],
+                    cost: { input: 0.075, output: 0.3, cacheRead: 0.01, cacheWrite: 0.01 }
                 }],
             }
         }
     };
 
+    // Wipe auth profiles to prevent "missing provider" errors
+    config.auth = { profiles: {} };
+
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: providerName + '/' + modelId };
     
-    // Clear legacy model mappings that might cause "model not found" errors
+    // Reset agent-specific model mappings
     config.agents.defaults.models = {};
     
-    console.log('Gemini configuration rebuilt and legacy models cleared');
+    console.log('Gemini configuration rebuilt and auth profiles cleared');
 }
 
 // Telegram configuration

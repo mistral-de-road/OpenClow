@@ -1,0 +1,80 @@
+{
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "agents": {
+    "defaults": {
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "workspace": "/root/.openclaw/workspace",
+      "models": {},
+      "model": {
+        "primary": "google/gemini-1.5-flash"
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "my-secret-4863"
+    },
+    "port": 18789,
+    "bind": "lan",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "trustedProxies": [
+      "10.1.0.0"
+    ],
+    "controlUi": {
+      "allowInsecureAuth": true
+    }
+  },
+  "auth": {
+    "profiles": {
+      "cloudflare-ai-gateway:default": {
+        "provider": "cloudflare-ai-gateway",
+        "mode": "api_key"
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "google": {
+        "apiKey": "AIzaSyC8-ySLrut_IvuE-1xohiVdeNp9CokmMjY",
+        "api": "google-generative-ai",
+        "models": [
+          {
+            "id": "gemini-1.5-flash",
+            "name": "Gemini 1.5 Flash",
+            "contextWindow": 1048576,
+            "maxTokens": 8192,
+            "input": [
+              "text",
+              "image"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-02-08T13:18:50.177Z",
+    "lastRunVersion": "2026.2.3",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.2.3",
+    "lastTouchedAt": "2026-02-08T13:18:50.186Z"
+  },
+  "channels": {}
+}
