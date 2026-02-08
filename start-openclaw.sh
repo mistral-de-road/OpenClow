@@ -6,7 +6,7 @@
 # 3. Patches config for features onboard doesn't cover (channels, gateway auth)
 # 4. Starts the gateway
 
-set -e
+set -ex
 
 if pgrep -f "openclaw gateway" > /dev/null 2>&1; then
     echo "OpenClaw gateway is already running, exiting."
@@ -284,7 +284,9 @@ if (googleKey) {
     config.agents.defaults.model = { primary: providerName + '/' + modelId };
     config.agents.defaults.models = {};
     
-    console.log('Gemini configuration patch applied successfully');
+    console.log('Gemini configuration patch applied successfully:', JSON.stringify(config.models.providers[providerName], null, 2));
+} else {
+    console.log('Gemini patch skipped: GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY not found');
 }
 
 // Telegram configuration
