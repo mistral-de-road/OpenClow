@@ -36,7 +36,6 @@ cat > "$CONFIG_FILE" <<EOF
     "mode": "merge",
     "providers": {
       "google": {
-        "baseUrl": "https://generativelanguage.googleapis.com",
         "apiKey": "${GOOGLE_GENERATIVE_AI_API_KEY:-${GEMINI_API_KEY}}",
         "api": "google-generative-ai",
         "models": [
@@ -52,7 +51,14 @@ cat > "$CONFIG_FILE" <<EOF
       }
     }
   },
-  "auth": { "profiles": {} },
+  "auth": {
+    "profiles": {
+      "google:manual": {
+        "provider": "google",
+        "mode": "api_key"
+      }
+    }
+  },
   "channels": {},
   "meta": { "lastTouchedVersion": "2026.2.3", "lastTouchedAt": "$(date -u +'%Y-%m-%dT%H:%M:%S.000Z')" }
 }
@@ -60,5 +66,8 @@ EOF
 
 echo "Starting OpenClaw Gateway with static config..."
 rm -f "$CONFIG_DIR/gateway.lock" 2>/dev/null || true
+
+# Explicitly set OPENCLAW_HOME to ensure config is picked up
+export OPENCLAW_HOME="/root/.openclaw"
 
 exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan --token "${OPENCLAW_GATEWAY_TOKEN:-my-secret-4863}"
