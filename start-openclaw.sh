@@ -5,10 +5,10 @@ export DEBUG=*
 
 
 # Patch OpenClaw to support Gemini 2.0 Flash (dynamic patching)
-if [ -f "/usr/local/lib/node_modules/openclaw/dist/entry.js" ]; then
-  echo "Patching OpenClaw to support Gemini 2.0 Flash..."
-  sed -i 's/gemini-1.5-flash/gemini-2.0-flash/g' /usr/local/lib/node_modules/openclaw/dist/entry.js
-fi
+# if [ -f "/usr/local/lib/node_modules/openclaw/dist/entry.js" ]; then
+#   echo "Patching OpenClaw to support Gemini 2.0 Flash..."
+#   sed -i 's/gemini-1.5-flash/gemini-2.0-flash/g' /usr/local/lib/node_modules/openclaw/dist/entry.js
+# fi
 
 CONFIG_DIR="/root/.openclaw"
 mkdir -p "$CONFIG_DIR"
