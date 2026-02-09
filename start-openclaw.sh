@@ -91,10 +91,13 @@ fs.writeFileSync('$CONFIG_DIR/openclaw.json', JSON.stringify(config, null, 2));
 console.log('Static configuration generated successfully.');
 "
 
-echo "Starting OpenClaw Gateway with static config..."
-rm -f "$CONFIG_DIR/gateway.lock" 2>/dev/null || true
+echo "Final environment check:"
+echo "OPENCLAW_HOME: $OPENCLAW_HOME"
+echo "OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:0:4}..."
+echo "GOOGLE_GENERATIVE_AI_API_KEY: ${GOOGLE_GENERATIVE_AI_API_KEY:0:4}..."
 
-# Explicitly set OPENCLAW_HOME to ensure config is picked up
-export OPENCLAW_HOME="/root/.openclaw"
+# Check if openclaw exists
+which openclaw || echo "openclaw not found in PATH"
 
-exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan --token "${OPENCLAW_GATEWAY_TOKEN}"
+echo "Executing openclaw gateway..."
+exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind 0.0.0.0 --token "${OPENCLAW_GATEWAY_TOKEN}"
