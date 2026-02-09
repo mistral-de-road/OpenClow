@@ -16,8 +16,17 @@ mkdir -p "$CONFIG_DIR"
 echo "Generating static config using Node.js for reliable environment variable expansion..."
 node -e "
 const fs = require('fs');
-const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN || 'my-secret-4863';
-const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || 'AIzaSyC8-ySLrut_IvuE-1xohiVdeNp9CokmMjY';
+const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN;
+const googleKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+
+if (!gatewayToken) {
+  console.error('CRITICAL: OPENCLAW_GATEWAY_TOKEN is not set.');
+  process.exit(1);
+}
+if (!googleKey) {
+  console.error('CRITICAL: GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY is not set.');
+  process.exit(1);
+}
 
 const config = {
   messages: {
@@ -88,4 +97,4 @@ rm -f "$CONFIG_DIR/gateway.lock" 2>/dev/null || true
 # Explicitly set OPENCLAW_HOME to ensure config is picked up
 export OPENCLAW_HOME="/root/.openclaw"
 
-exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan --token "${OPENCLAW_GATEWAY_TOKEN:-my-secret-4863}"
+exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan --token "${OPENCLAW_GATEWAY_TOKEN}"
