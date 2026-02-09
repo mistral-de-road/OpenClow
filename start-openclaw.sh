@@ -44,7 +44,7 @@ const config = {
   gateway: {
     mode: 'local',
     port: 18789,
-    bind: 'lan',
+    bind: '0.0.0.0',
     auth: {
       mode: 'token',
       token: gatewayToken
